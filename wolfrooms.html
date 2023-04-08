@@ -19,6 +19,31 @@
 	var cycleCount = 0;
 	var fps_rate = '...';
 	
+	// map
+	const MAP_SIZE = 16;
+	const MAP_SCALE = 10;
+	const MAP_RANGE = MAP_SCALE * MAP_SIZE;
+	const MAP_SPEED = (MAP_SCALE / 2) / 10;
+	
+	var map = [
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	];
+	
 	// screen constants
 	const WIDTH = 300, HALF_WIDTH = 150;
 	const HEIGHT = 200, HALF_HEIGHT = 100;
@@ -42,16 +67,34 @@
 		canvas.height = window.innerHeight * 0.4;
 		
 		// updating the screen every loop
+		//context.fillStyle = 'White';
+		//context.fillRect(0, 0, canvas.width, canvas.height);
 		context.fillStyle = 'Black';
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.fillStyle = 'White';
 		context.fillRect(canvas.width / 2 - HALF_WIDTH, canvas.height / 2 - HALF_HEIGHT, WIDTH, HEIGHT);
+	
+		// drawing the minimap on the screen
+		for (var row = 0; row < MAP_SIZE; row++){
+			for (var col = 0; col < MAP_SIZE; col++){
+				
+				var square = row * MAP_SIZE + col;
+				var squareCol = Math.floor(canvas.width / 2 - MAP_RANGE / 2);
+				var squareRow = Math.floor(canvas.height / 2 - MAP_RANGE / 2);
+				
+				if (map[square] == 1){
+					context.fillStyle = '#555';					
+					context.fillRect(squareCol + col * MAP_SCALE, squareRow + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
+				} else {
+					context.fillStyle = '#aaa';
+					context.fillRect(squareCol + col * MAP_SCALE, squareRow + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
+				}
+			}
+		}
 	
 		// make the loop infinite
 		setTimeout(gameLoop, 0);
 		
 		// render FPS to the screen
-		context.fillStyle = 'White';
+		context.fillStyle = 'Black';
 		context.font = '12px Ubuntu';
 		context.fillText("FPS: " + fps_rate, 0, 20);
 		
