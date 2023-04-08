@@ -12,6 +12,10 @@
 	const canvas = document.getElementById('screen');
 	const context = canvas.getContext('2d');
 	
+	// screen constants
+	const WIDTH = 300, HALF_WIDTH = 150;
+	const HEIGHT = 200, HALF_HEIGHT = 100;
+	
 	// FPS counter
 	const FPS = 60;
 	const cycleDelay = Math.floor(1000 / FPS);
@@ -30,23 +34,32 @@
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	];
 	
-	// screen constants
-	const WIDTH = 300, HALF_WIDTH = 150;
-	const HEIGHT = 200, HALF_HEIGHT = 100;
+	// player definition
+	var playerX = MAP_SCALE + 20;
+	var playerY = MAP_SCALE + 20;
+	var playerAngle = Math.PI / 3;
+	var playerMoveX = 0;
+	var playerMoveY = 0;
+	var playerMoveAngle = 0;
+	
+	
+	// camera vars and definition
+	const DOUBLE_PI = 2 * Math.PI;
+	
 	
 	// definition of the game loop
 	function gameLoop(){
@@ -67,28 +80,45 @@
 		canvas.height = window.innerHeight * 0.4;
 		
 		// updating the screen every loop
-		//context.fillStyle = 'White';
-		//context.fillRect(0, 0, canvas.width, canvas.height);
 		context.fillStyle = 'Black';
 		context.fillRect(canvas.width / 2 - HALF_WIDTH, canvas.height / 2 - HALF_HEIGHT, WIDTH, HEIGHT);
 	
+		// map offsets for minimap
+		var mapOffsetX = Math.floor(canvas.width / 2 - MAP_RANGE / 2);
+		var mapOffsetY = Math.floor(canvas.height / 2 - MAP_RANGE / 2);
+		
 		// drawing the minimap on the screen
 		for (var row = 0; row < MAP_SIZE; row++){
 			for (var col = 0; col < MAP_SIZE; col++){
-				
 				var square = row * MAP_SIZE + col;
-				var squareCol = Math.floor(canvas.width / 2 - MAP_RANGE / 2);
-				var squareRow = Math.floor(canvas.height / 2 - MAP_RANGE / 2);
 				
 				if (map[square] == 1){
 					context.fillStyle = '#555';					
-					context.fillRect(squareCol + col * MAP_SCALE, squareRow + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
+					context.fillRect(mapOffsetX + col * MAP_SCALE, mapOffsetY + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
 				} else {
 					context.fillStyle = '#aaa';
-					context.fillRect(squareCol + col * MAP_SCALE, squareRow + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
+					context.fillRect(mapOffsetX + col * MAP_SCALE, mapOffsetY + row * MAP_SCALE, MAP_SCALE, MAP_SCALE);
 				}
 			}
 		}
+		
+		// draw a player on a minimap via offsets
+		var playerMapX = playerX + mapOffsetX; 
+		var playerMapY = playerY + mapOffsetY;
+	
+		// player circle
+		context.fillStyle = 'Red';
+		context.beginPath();
+		context.arc(playerMapX, playerMapY, 2, 0, DOUBLE_PI);
+		context.fill();
+		
+		// player looking line vector
+		context.strokeStyle = 'Red';
+		context.lineWidth = 1;
+		context.beginPath();
+		context.moveTo(playerMapX, playerMapY);
+		context.lineTo(playerMapX + Math.sin(playerAngle) * 5, playerMapY + Math.cos(playerAngle) * 5);
+		context.stroke();
 	
 		// make the loop infinite
 		setTimeout(gameLoop, 0);
