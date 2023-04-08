@@ -56,10 +56,28 @@
 	var playerMoveY = 0;
 	var playerMoveAngle = 0;
 	
+	// handle player input
+	document.onkeydown = function(event){
+		//console.log(event.keyCode);
+		switch(event.keyCode){
+			case 40: playerMoveX = -1; playerMoveY = -1; break;
+			case 38: playerMoveX = 1; playerMoveY = 1; break;
+			case 37: playerMoveAngle = 1; break;
+			case 39: playerMoveAngle = -1; break;
+		}
+	}
+	
+	document.onkeyup = function(event){
+		switch(event.keyCode){
+			case 40:
+			case 38: playerMoveX = 0; playerMoveY = 0; break;
+			case 37:
+			case 39: playerMoveAngle = 0; break;
+		}
+	}
 	
 	// camera vars and definition
 	const DOUBLE_PI = 2 * Math.PI;
-	
 	
 	// definition of the game loop
 	function gameLoop(){
@@ -82,6 +100,19 @@
 		// updating the screen every loop
 		context.fillStyle = 'Black';
 		context.fillRect(canvas.width / 2 - HALF_WIDTH, canvas.height / 2 - HALF_HEIGHT, WIDTH, HEIGHT);
+	
+		// update the position of player
+		var playerOffsetX = Math.sin(playerAngle) * MAP_SPEED / 2;
+		var playerOffsetY = Math.cos(playerAngle) * MAP_SPEED / 2;
+		var mapTargetX = Math.floor(playerY / MAP_SCALE) * MAP_SIZE +
+						 Math.floor((playerX + playerOffsetX * playerMoveX) / MAP_SCALE);
+		var mapTargetY = Math.floor((playerY + playerOffsetY * playerMoveY) / MAP_SCALE) * MAP_SIZE +
+						 Math.floor(playerX / MAP_SCALE);
+		
+		// move the player
+		if(playerMoveX && map[mapTargetX] == 0) playerX += playerOffsetX * playerMoveX;
+		if(playerMoveY && map[mapTargetY] == 0) playerY += playerOffsetY * playerMoveY;
+		if(playerMoveAngle) playerAngle += 0.03 * playerMoveAngle;
 	
 		// map offsets for minimap
 		var mapOffsetX = Math.floor(canvas.width / 2 - MAP_RANGE / 2);
