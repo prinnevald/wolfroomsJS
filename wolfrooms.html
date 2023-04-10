@@ -126,10 +126,10 @@
 		image.src = 'assets/walls/' + filename + '.png';
 		WALLS.push(image);
 	}
-	
+
 	// definition of the game loop
 	function gameLoop(){
-	
+
 		// calculate the FPS
 		cycleCount++;
 		if(cycleCount >= 60) cycleCount = 0;
@@ -163,7 +163,11 @@
 		var mapOffsetY = Math.floor(canvas.height / 2) - HALF_HEIGHT;
 		var playerMapX = (playerX / MAP_SCALE) * 5 + mapOffsetX; 
 		var playerMapY = (playerY / MAP_SCALE) * 5 + mapOffsetY;
-				
+
+		// fill screen black
+		context.fillStyle = 'Black';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+
 		// draw background: floor and ceiling
 		context.drawImage(WALLS[0], canvas.width / 2 - HALF_WIDTH, canvas.height / 2 - HALF_HEIGHT);
 		//context.fillStyle = 'Black';
@@ -179,6 +183,7 @@
 		var rayStartX = Math.floor(playerX / MAP_SCALE) * MAP_SCALE;
 		var rayStartY = Math.floor(playerY / MAP_SCALE) * MAP_SCALE;
 		
+
 		// loop rays
 		for(var ray = 0; ray < WIDTH; ray++){
 			// get currentAngle sin cos
@@ -321,7 +326,7 @@
 		}
 		
 		// fix wall overlap the screen
-		context.fillStyle = 'White';
+		context.fillStyle = 'Black';
 		context.fillRect(0, 0, canvas.width, mapOffsetY);
 		context.fillRect(0, mapOffsetY + HEIGHT, canvas.width, canvas.width - mapOffsetY + HEIGHT);
 
@@ -329,7 +334,7 @@
 		setTimeout(gameLoop, 0);
 		
 		// render FPS to the screen
-		context.fillStyle = 'Black';
+		context.fillStyle = 'White';
 		context.font = '12px Ubuntu';
 		context.fillText("FPS: " + fps_rate, 0, 20);
 		
