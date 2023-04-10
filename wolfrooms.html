@@ -15,6 +15,21 @@
 	// screen constants
 	const WIDTH = 300, HALF_WIDTH = 150;
 	const HEIGHT = 200, HALF_HEIGHT = 100;
+
+	// background music
+	var myAudio = new Audio('assets/audio/background.ogg'); 
+	myAudio.addEventListener('ended', function() {
+		this.currentTime = 0;
+		this.play();
+	}, false);
+	myAudio.play();
+
+	// load steps sound 
+	const STEPS = [];
+	for(var filename = 1; filename < 7; filename++){
+		var myStep = new Audio('assets/audio/walking/' + filename + '.ogg');
+		STEPS.push(myStep);
+	}
 	
 	// FPS counter
 	const FPS = 60;
@@ -106,7 +121,7 @@
 	const WALLS = [];
 	
 	// load textures for walls
-	for(var filename = 0; filename < 14; filename++){
+	for(var filename = 0; filename < 15; filename++){
 		var image = document.createElement('img');
 		image.src = 'assets/walls/' + filename + '.png';
 		WALLS.push(image);
@@ -154,13 +169,17 @@
 		//context.fillStyle = 'Black';
 		//context.fillRect(canvas.width / 2 - HALF_WIDTH, canvas.height / 2 - HALF_HEIGHT, WIDTH, HEIGHT);
 	
+		// walking sounds	
+		if((playerMoveX != 0 || playerMoveY != 0) && !cycleCount){
+			STEPS[Math.floor(Math.random() * STEPS.length)].play();
+		}
+
 		// raycasting engine implementation
 		var currentAngle = playerAngle + HALF_FOV;
 		var rayStartX = Math.floor(playerX / MAP_SCALE) * MAP_SCALE;
 		var rayStartY = Math.floor(playerY / MAP_SCALE) * MAP_SCALE;
 		
 		// loop rays
-		
 		for(var ray = 0; ray < WIDTH; ray++){
 			// get currentAngle sin cos
 			var currentSin = Math.sin(currentAngle); currentSin = currentSin ? currentSin : 0.000001;
@@ -253,7 +272,7 @@
 			context.fillRect(mapOffsetX + ray, mapOffsetY + HALF_HEIGHT - wallHeight / 2, 1, wallHeight);
 			
 			context.drawImage(
-				WALLS[2],
+				WALLS[14],
 				textureOffset,
 				0,
 				1,
