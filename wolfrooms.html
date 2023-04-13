@@ -32,9 +32,9 @@
 	var map = [
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 0, 0, 0, 0, 6, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 0, 0, 6, 0, 1, 0, 0, 0, 0, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -151,8 +151,8 @@
 		canvas.height = window.innerHeight * 0.4;
 
 		// update the position of player
-		var playerOffsetX = Math.sin(playerAngle) * MAP_SPEED / 4;
-		var playerOffsetY = Math.cos(playerAngle) * MAP_SPEED / 4;
+		var playerOffsetX = Math.sin(playerAngle) * MAP_SPEED / 2;
+		var playerOffsetY = Math.cos(playerAngle) * MAP_SPEED / 2;
 		var mapTargetX = Math.floor(playerY / MAP_SCALE) * MAP_SIZE +
 						 Math.floor((playerX + playerOffsetX * playerMoveX * 10) / MAP_SCALE);
 		var mapTargetY = Math.floor((playerY + playerOffsetY * playerMoveY * 10) / MAP_SCALE) * MAP_SIZE +
@@ -161,7 +161,7 @@
 		// move the player
 		if(playerMoveX && map[mapTargetX] == 0) playerX += playerOffsetX * playerMoveX;
 		if(playerMoveY && map[mapTargetY] == 0) playerY += playerOffsetY * playerMoveY;
-		if(playerMoveAngle) playerAngle += 0.007 * playerMoveAngle;
+		if(playerMoveAngle) playerAngle += 0.015 * playerMoveAngle;
 	
 		// map and player offsets calculation
 		var mapOffsetX = Math.floor(canvas.width / 2) - HALF_WIDTH;
@@ -182,7 +182,7 @@
 		if((playerMoveX != 0 || playerMoveY != 0) && stepFreq < 5)
 			STEPS[Math.floor(Math.random() * STEPS.length)].play();
 		stepFreq++;
-		if(stepFreq > 100) stepFreq = 0;
+		if(stepFreq > 60) stepFreq = 0;
 		
 
 		// raycasting engine implementation
@@ -245,17 +245,18 @@
 			} textureEndX = rayEndX;
 			
 			
-			// render 3D projection
+			// calculate 3D projection
 			var depth = verticalDepth < horizontalDepth ? verticalDepth : horizontalDepth;
 			var textureImage = verticalDepth < horizontalDepth ? textureY : textureX;
 			var textureOffset = verticalDepth < horizontalDepth ? textureEndY : textureEndX;
 			textureOffset = Math.floor(textureOffset - Math.floor(textureOffset / MAP_SCALE) * MAP_SCALE);
 			depth *= Math.cos(playerAngle - currentAngle);
-			var wallHeight = Math.floor(MAP_SCALE * 380 / (depth + 0.0001));
+			var wallHeight = Math.floor(MAP_SCALE * 280 / (depth + 0.0001));
 			
-			context.fillStyle = verticalDepth < horizontalDepth ? '#aaa' : '#555';
-			context.fillRect(mapOffsetX + ray, mapOffsetY + HALF_HEIGHT - wallHeight / 2, 1, wallHeight);
+			// context.fillStyle = verticalDepth < horizontalDepth ? '#aaa' : '#555';
+			// context.fillRect(mapOffsetX + ray, mapOffsetY + HALF_HEIGHT - wallHeight / 2, 1, wallHeight);
 			
+			// render textures
 			context.drawImage(
 				WALLS[textureImage],
 				textureOffset,
