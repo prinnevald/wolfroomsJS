@@ -34,7 +34,7 @@
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-		1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+		1, 0, 0, 1, 0, 0, 0, 0, 6, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -118,14 +118,14 @@
 		this.currentTime = 0;
 		this.play();
 	}, false);
-	myAudio.volume = 0.5;
+	myAudio.volume = 0.7;
 	myAudio.play();
 
 	// load steps sound 
 	const STEPS = [];
 	for(var filename = 1; filename < 6; filename++){
 		var myStep = new Audio('assets/audio/walking/' + filename + '.ogg');
-		myStep.volume = 0.3;
+		myStep.volume = 0.5;
 		STEPS.push(myStep);
 	}
 
@@ -161,7 +161,7 @@
 		// move the player
 		if(playerMoveX && map[mapTargetX] == 0) playerX += playerOffsetX * playerMoveX;
 		if(playerMoveY && map[mapTargetY] == 0) playerY += playerOffsetY * playerMoveY;
-		if(playerMoveAngle) playerAngle += 0.01 * playerMoveAngle;
+		if(playerMoveAngle) playerAngle += 0.007 * playerMoveAngle;
 	
 		// map and player offsets calculation
 		var mapOffsetX = Math.floor(canvas.width / 2) - HALF_WIDTH;
